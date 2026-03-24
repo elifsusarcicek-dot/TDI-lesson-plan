@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Total Drama Island — Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #E8263A;
+  --darkred: #9E1425;
+  --yellow: #FFD600;
+  --black: #111;
+  --white: #FFF9F0;
+  --gray: #2a2a2a;
+  --mid: #444;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--black);
+  font-family: 'Nunito', sans-serif;
+  color: var(--white);
+  cursor: default;
+}
+
+/* ── STAGE WRAPPER ── */
+.stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(60px);
+  transition: opacity .45s cubic-bezier(.4,0,.2,1), transform .45s cubic-bezier(.4,0,.2,1);
+}
+.stage.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+}
+.stage.exit {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  height: 56px;
+  background: var(--black);
+  border-bottom: 3px solid var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+.topbar-left { display: flex; align-items: center; gap: 14px; }
+.tdi-logo {
+  font-family: 'Bangers', cursive;
+  font-size: 15px;
+  letter-spacing: 2px;
+  background: var(--red);
+  color: var(--yellow);
+  padding: 3px 10px 3px;
+  border-radius: 3px;
+}
+.stage-label {
+  font-family: 'Bangers', cursive;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  color: var(--white);
+}
+.stage-label span { color: var(--yellow); }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+
+/* Timer */
+.timer-wrap {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--gray);
+  border: 2px solid var(--mid);
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color .2s;
+}
+.timer-wrap:hover { border-color: var(--yellow); }
+.timer-wrap.running { border-color: var(--red); }
+.timer-wrap.done { border-color: var(--yellow); background: #2a1f00; }
+.timer-icon { font-size: 14px; }
+.timer-display {
+  font-family: 'Bangers', cursive;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: var(--yellow);
+  min-width: 52px;
+}
+
+/* Nav dots */
+.nav-dots { display: flex; gap: 6px; align-items: center; }
+.nav-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--mid);
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.nav-dot.active { background: var(--yellow); transform: scale(1.4); }
+.nav-dot.done   { background: var(--red); }
+
+/* Nav arrows */
+.nav-arrows { display: flex; gap: 8px; }
+.nav-btn {
+  font-family: 'Bangers', cursive;
+  font-size: 16px;
+  letter-spacing: 1px;
+  background: var(--gray);
+  color: var(--white);
+  border: 2px solid var(--mid);
+  border-radius: 5px;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.nav-btn:hover { border-color: var(--white); background: #333; }
+.nav-btn:disabled { opacity: .3; cursor: not-allowed; }
+.nav-btn.next { background: var(--red); border-color: var(--red); color: var(--white); }
+.nav-btn.next:hover { background: var(--darkred); border-color: var(--darkred); }
+
+/* ── STAGE CONTENT ── */
+.stage-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ══════════════════════════════════
+   STAGE 1 — LEAD-IN
+══════════════════════════════════ */
+#s1 .stage-body {
+  background: #0a1628;
+  position: relative;
+  overflow: hidden;
+}
+
+.island-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 100%, #0d4a1e 0%, transparent 70%),
+    radial-gradient(ellipse 60% 60% at 30% 90%, #1a6b2e 0%, transparent 50%),
+    radial-gradient(ellipse 100% 60% at 50% 80%, #0a3d1a 0%, transparent 60%),
+    linear-gradient(180deg, #0a1628 0%, #0d2d4a 40%, #1a5c8a 70%, #0d3d5c 100%);
+}
+
+/* animated waves */
+.waves {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 160px;
+  overflow: hidden;
+}
+.wave {
+  position: absolute;
+  bottom: 0; left: -50%;
+  width: 200%;
+  height: 80px;
+  border-radius: 40%;
+}
+.wave1 {
+  background: rgba(29, 107, 160, 0.5);
+  animation: wave 6s linear infinite;
+}
+.wave2 {
+  background: rgba(20, 80, 120, 0.4);
+  animation: wave 9s linear infinite reverse;
+  bottom: 10px;
+}
+.wave3 {
+  background: rgba(10, 50, 80, 0.6);
+  animation: wave 12s linear infinite;
+  bottom: -10px;
+}
+@keyframes wave {
+  0% { transform: translateX(0) rotate(0deg); }
+  100% { transform: translateX(50%) rotate(360deg); }
+}
+
+/* palm trees */
+.palm { position: absolute; bottom: 120px; }
+.palm svg { display: block; }
+.palm-l { left: 5%; }
+.palm-r { right: 5%; transform: scaleX(-1); }
+
+.island-content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 0 60px 80px;
+  text-align: center;
+}
+.s1-eyebrow {
+  font-family: 'Bangers', cursive;
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: var(--yellow);
+  opacity: .8;
+}
+.s1-title {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(48px, 7vw, 88px);
+  letter-spacing: 4px;
+  line-height: .95;
+  color: var(--white);
+  text-shadow: 4px 4px 0 var(--red), 8px 8px 0 rgba(0,0,0,.4);
+}
+.s1-title span { color: var(--yellow); display: block; }
+.s1-prompt {
+  background: rgba(0,0,0,.55);
+  border: 2px solid var(--yellow);
+  border-radius: 10px;
+  padding: 16px 36px;
+  font-size: clamp(18px, 2.4vw, 28px);
+  font-weight: 900;
+  color: var(--white);
+  margin-top: 8px;
+}
+.s1-prompt em { color: var(--yellow); font-style: normal; }
+
+/* live board */
+.live-board {
+  width: 100%;
+  max-width: 700px;
+  background: rgba(0,0,0,.6);
+  border: 2px solid rgba(255,255,255,.15);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.live-board-header {
+  background: var(--red);
+  padding: 6px 16px;
+  font-family: 'Bangers', cursive;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--white);
+  display: flex; align-items: center; gap: 8px;
+}
+.live-board-input {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.live-board-input input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+  placeholder: "Type an item and press Enter…";
+}
+.live-board-input input::placeholder { color: rgba(255,255,255,.3); font-weight: 400; }
+.live-board-input button {
+  background: var(--yellow);
+  color: var(--black);
+  border: none;
+  border-radius: 4px;
+  font-family: 'Bangers', cursive;
+  font-size: 13px;
+  letter-spacing: 1px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.live-board-input button:hover { opacity: .85; }
+.live-board-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 14px 12px;
+  min-height: 48px;
+}
+.board-chip {
+  background: rgba(255,255,255,.12);
+  border: 1.5px solid rgba(255,255,255,.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--white);
+  animation: chipIn .25s ease;
+  cursor: pointer;
+  transition: background .15s;
+}
+.board-chip:hover { background: rgba(232,38,58,.4); }
+@keyframes chipIn {
+  from { transform: scale(.7); opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+
+/* ══════════════════════════════════
+   STAGE 2 — CONFESSIONALS
+══════════════════════════════════ */
+#s2 .stage-body {
+  background: #111;
+  display: flex;
+  flex-direction: column;
+}
+.confessional-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 32px 16px;
+  gap: 14px;
+  overflow: hidden;
+}
+.char-tabs {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.char-tab {
+  font-family: 'Bangers', cursive;
+  font-size: 15px;
+  letter-spacing: 1px;
+  padding: 7px 18px;
+  border-radius: 6px 6px 0 0;
+  border: 2px solid var(--mid);
+  border-bottom: none;
+  background: var(--gray);
+  color: rgba(255,255,255,.5);
+  cursor: pointer;
+  transition: all .2s;
+  display: flex; align-items: center; gap: 7px;
+}
+.char-tab:hover { color: var(--white); border-color: #666; }
+.char-tab.active { background: var(--red); border-color: var(--red); color: var(--white); }
+.char-tab .tab-emoji { font-size: 16px; }
+
+.confessional-card {
+  flex: 1;
+  background: #1a1a1a;
+  border: 2px solid var(--mid);
+  border-radius: 0 10px 10px 10px;
+  padding: 28px 36px;
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  overflow: auto;
+}
+.confessional-card.active { display: flex; }
+.conf-char-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--mid);
+}
+.conf-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 3px solid var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.conf-name {
+  font-family: 'Bangers', cursive;
+  font-size: 26px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.conf-archetype {
+  display: inline-block;
+  background: var(--red);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+.conf-text {
+  font-size: clamp(15px, 1.8vw, 20px);
+  line-height: 1.75;
+  color: rgba(255,255,255,.9);
+}
+.conf-text .highlight {
+  background: rgba(255,214,0,.2);
+  border-bottom: 2px solid var(--yellow);
+  color: var(--yellow);
+  font-weight: 700;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+.surprise-q {
+  margin-top: auto;
+  background: rgba(232,38,58,.12);
+  border: 1.5px solid rgba(232,38,58,.3);
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255,255,255,.7);
+}
+.surprise-q span { color: var(--yellow); }
+
+/* ══════════════════════════════════
+   STAGE 3 — LANGUAGE DETECTIVE
+══════════════════════════════════ */
+#s3 .stage-body {
+  background: #0f0f1a;
+  padding: 20px 32px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.s3-instruction {
+  font-size: 15px;
+  color: rgba(255,255,255,.65);
+  flex-shrink: 0;
+}
+.s3-instruction strong { color: var(--yellow); }
+.sort-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+.sort-col {
+  border-radius: 10px;
+  border: 2px solid;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sort-col.count   { border-color: #2A8C4A; }
+.sort-col.nocount { border-color: var(--red); }
+.sort-col.depends { border-color: var(--yellow); }
+
+.sort-col-header {
+  padding: 10px 16px;
+  font-family: 'Bangers', cursive;
+  font-size: 17px;
+  letter-spacing: 1px;
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+.sort-col.count   .sort-col-header { background: rgba(42,140,74,.25); color: #7EE89A; }
+.sort-col.nocount .sort-col-header { background: rgba(232,38,58,.25); color: #FF8A95; }
+.sort-col.depends .sort-col-header { background: rgba(255,214,0,.15); color: var(--yellow); }
+.sort-col-sub {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  opacity: .7;
+  display: block;
+  letter-spacing: .5px;
+}
+.sort-col-body {
+  flex: 1;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+}
+.sort-item {
+  background: rgba(255,255,255,.06);
+  border: 1.5px solid rgba(255,255,255,.1);
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sort-item:hover { background: rgba(255,255,255,.12); }
+.sort-item.prefilled { opacity: .5; cursor: default; font-style: italic; }
+.sort-item.prefilled:hover { background: rgba(255,255,255,.06); }
+.sort-item .remove-btn { opacity: 0; font-size: 12px; color: rgba(255,255,255,.4); transition: opacity .15s; }
+.sort-item:hover .remove-btn { opacity: 1; }
+
+.word-bank-s3 {
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  flex-shrink: 0;
+}
+.wb-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 8px; }
+.wb-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.wb-chip {
+  background: rgba(255,255,255,.08);
+  border: 1.5px solid rgba(255,255,255,.15);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+.wb-chip:hover { background: rgba(255,214,0,.2); border-color: var(--yellow); color: var(--yellow); }
+.wb-chip.placed { opacity: .3; cursor: default; text-decoration: line-through; }
+.wb-chip.placed:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); color: var(--white); }
+
+/* placement modal */
+.place-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.place-modal.show { display: flex; }
+.place-modal-box {
+  background: #1e1e1e;
+  border: 2px solid var(--yellow);
+  border-radius: 12px;
+  padding: 24px 28px;
+  min-width: 320px;
+  text-align: center;
+}
+.place-modal-word {
+  font-family: 'Bangers', cursive;
+  font-size: 32px;
+  letter-spacing: 2px;
+  color: var(--yellow);
+  margin-bottom: 16px;
+}
+.place-modal-title { font-size: 14px; color: rgba(255,255,255,.6); margin-bottom: 14px; }
+.place-modal-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.place-btn {
+  font-family: 'Bangers', cursive;
+  font-size: 15px;
+  letter-spacing: 1px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: 2px solid;
+  cursor: pointer;
+  transition: all .15s;
+}
+.place-btn.count   { background: rgba(42,140,74,.2); border-color: #2A8C4A; color: #7EE89A; }
+.place-btn.nocount { background: rgba(232,38,58,.2); border-color: var(--red); color: #FF8A95; }
+.place-btn.depends { background: rgba(255,214,0,.15); border-color: var(--yellow); color: var(--yellow); }
+.place-btn:hover { opacity: .8; transform: scale(1.04); }
+.place-btn-cancel { background: transparent; border-color: var(--mid); color: rgba(255,255,255,.4); }
+.place-btn-cancel:hover { border-color: var(--white); color: var(--white); opacity: 1; transform: none; }
+
+/* ══════════════════════════════════
+   STAGE 4 — SURVIVAL RULES
+══════════════════════════════════ */
+#s4 .stage-body {
+  background: #110a00;
+  padding: 24px 36px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.s4-concept {
+  background: rgba(255,214,0,.07);
+  border: 2px solid rgba(255,214,0,.25);
+  border-radius: 10px;
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+.s4-concept-title {
+  font-family: 'Bangers', cursive;
+  font-size: 15px;
+  letter-spacing: 2px;
+  color: var(--yellow);
+  margin-bottom: 10px;
+}
+.concept-qs { display: flex; flex-direction: column; gap: 8px; }
+.concept-q {
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255,255,255,.8);
+  padding-left: 14px;
+  border-left: 3px solid var(--yellow);
+  cursor: pointer;
+  transition: color .15s;
+}
+.concept-q:hover { color: var(--white); }
+.concept-q .ans {
+  display: none;
+  color: var(--yellow);
+  font-weight: 700;
+  margin-left: 6px;
+}
+.concept-q.revealed .ans { display: inline; }
+
+.rule-trio {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+.rule-card {
+  border-radius: 10px;
+  border: 2px solid;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.rule-card.a-an  { border-color: #2A8C4A; }
+.rule-card.some  { border-color: var(--red); }
+.rule-card.dep   { border-color: var(--yellow); }
+.rule-card-head {
+  padding: 10px 16px;
+  font-family: 'Bangers', cursive;
+  font-size: 20px;
+  letter-spacing: 2px;
+  flex-shrink: 0;
+}
+.rule-card.a-an  .rule-card-head { background: rgba(42,140,74,.25); color: #7EE89A; }
+.rule-card.some  .rule-card-head { background: rgba(232,38,58,.25); color: #FF8A95; }
+.rule-card.dep   .rule-card-head { background: rgba(255,214,0,.15); color: var(--yellow); }
+.rule-card-body { flex: 1; padding: 10px 14px; }
+.rule-textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 100px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  resize: none;
+  line-height: 1.6;
+}
+.rule-textarea::placeholder { color: rgba(255,255,255,.2); font-weight: 400; font-style: italic; }
+
+/* ══════════════════════════════════
+   STAGE 5 — 6TH CONTESTANT
+══════════════════════════════════ */
+#s5 .stage-body {
+  background: #0d0d0d;
+  padding: 20px 32px 16px;
+  display: flex;
+  gap: 24px;
+  overflow: hidden;
+}
+.s5-left {
+  width: 340px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.s5-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.superfan-card {
+  background: linear-gradient(135deg, #1a0a00, #2a1500);
+  border: 2px solid var(--yellow);
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.superfan-card::before {
+  content: '★';
+  position: absolute;
+  right: -10px; top: -10px;
+  font-size: 80px;
+  color: rgba(255,214,0,.06);
+  line-height: 1;
+}
+.sf-avatar {
+  width: 72px; height: 72px;
+  background: rgba(255,214,0,.15);
+  border: 3px solid var(--yellow);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+.sf-name {
+  font-family: 'Bangers', cursive;
+  font-size: 24px;
+  letter-spacing: 1px;
+  color: var(--yellow);
+  line-height: 1;
+}
+.sf-archetype {
+  display: inline-block;
+  background: var(--red);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 6px 0 10px;
+}
+.sf-desc {
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255,255,255,.75);
+}
+
+.task-box {
+  background: rgba(232,38,58,.1);
+  border: 1.5px solid rgba(232,38,58,.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255,255,255,.75);
+}
+.task-box strong { color: var(--white); display: block; margin-bottom: 4px; }
+
+.packing-title {
+  font-family: 'Bangers', cursive;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: var(--white);
+  flex-shrink: 0;
+}
+.packing-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  overflow-y: auto;
+}
+.pack-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 110px 100px;
+  gap: 0;
+  border: 1.5px solid rgba(255,255,255,.12);
+  border-radius: 7px;
+  overflow: hidden;
+  background: rgba(255,255,255,.04);
+  min-height: 52px;
+}
+.pack-num {
+  background: rgba(232,38,58,.3);
+  color: var(--white);
+  font-family: 'Bangers', cursive;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.pack-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 8px 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  width: 100%;
+}
+.pack-input::placeholder { color: rgba(255,255,255,.2); font-weight: 400; font-style: italic; }
+.pack-type {
+  border-left: 1px solid rgba(255,255,255,.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6px 10px;
+  gap: 3px;
+}
+.pack-type-opt {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: rgba(255,255,255,.5);
+  cursor: pointer; user-select: none;
+  transition: color .15s;
+}
+.pack-type-opt:hover { color: var(--white); }
+.pack-type-opt input[type=radio] { display: none; }
+.pack-type-radio {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.3);
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.pack-type-opt:has(input:checked) { color: var(--yellow); }
+.pack-type-opt:has(input:checked) .pack-type-radio { background: var(--yellow); border-color: var(--yellow); }
+.pack-why {
+  border-left: 1px solid rgba(255,255,255,.1);
+  padding: 6px 10px;
+  display: flex; align-items: flex-end;
+  padding-bottom: 8px;
+}
+.pack-why input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,.2);
+  outline: none;
+  width: 100%;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,.6);
+  padding-bottom: 2px;
+}
+.pack-why input::placeholder { color: rgba(255,255,255,.2); }
+
+.present-note {
+  background: rgba(255,214,0,.08);
+  border: 1.5px solid rgba(255,214,0,.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: rgba(255,255,255,.65);
+  line-height: 1.6;
+  flex-shrink: 0;
+}
+.present-note strong { color: var(--yellow); }
+
+/* ══════════════════════════════════
+   SHARED UTILITIES
+══════════════════════════════════ */
+.stage-headline {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(20px, 2.5vw, 30px);
+  letter-spacing: 2px;
+  color: var(--white);
+  flex-shrink: 0;
+}
+.stage-headline span { color: var(--yellow); }
+
+/* fullscreen hint */
+.fs-hint {
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
+  font-size: 11px;
+  color: rgba(255,255,255,.2);
+  z-index: 50;
+  cursor: pointer;
+  transition: color .2s;
+}
+.fs-hint:hover { color: rgba(255,255,255,.5); }
+</style>
+</head>
+<body>
+
+<!-- ══════════ STAGE 1 — LEAD IN ══════════ -->
+<div class="stage active" id="s1">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="tdi-logo">TOTAL DRAMA</div>
+      <div class="stage-label">Lead-in — <span>The Island Challenge</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="timer-wrap" id="timer1" onclick="toggleTimer(1,5)">
+        <span class="timer-icon">⏱</span>
+        <span class="timer-display" id="td1">5:00</span>
+      </div>
+      <div class="nav-dots" id="dots"></div>
+      <div class="nav-arrows">
+        <button class="nav-btn prev" onclick="go(-1)" disabled id="prevBtn">◀ BACK</button>
+        <button class="nav-btn next" onclick="go(1)" id="nextBtn">NEXT ▶</button>
+      </div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="island-bg"></div>
+    <div class="waves">
+      <div class="wave wave1"></div>
+      <div class="wave wave2"></div>
+      <div class="wave wave3"></div>
+    </div>
+    <!-- Palm left -->
+    <div class="palm palm-l">
+      <svg width="90" height="200" viewBox="0 0 90 200">
+        <rect x="42" y="80" width="8" height="120" rx="4" fill="#3d2b1f"/>
+        <ellipse cx="30" cy="70" rx="28" ry="10" fill="#2d6a2d" transform="rotate(-20,30,70)"/>
+        <ellipse cx="55" cy="55" rx="28" ry="10" fill="#2a5f2a" transform="rotate(10,55,55)"/>
+        <ellipse cx="25" cy="45" rx="24" ry="9" fill="#338a33" transform="rotate(-35,25,45)"/>
+        <ellipse cx="60" cy="40" rx="24" ry="9" fill="#2d6a2d" transform="rotate(25,60,40)"/>
+        <ellipse cx="45" cy="30" rx="22" ry="8" fill="#3a9a3a" transform="rotate(-5,45,30)"/>
+      </svg>
+    </div>
+    <!-- Palm right -->
+    <div class="palm palm-r">
+      <svg width="90" height="200" viewBox="0 0 90 200">
+        <rect x="42" y="80" width="8" height="120" rx="4" fill="#3d2b1f"/>
+        <ellipse cx="30" cy="70" rx="28" ry="10" fill="#2d6a2d" transform="rotate(-20,30,70)"/>
+        <ellipse cx="55" cy="55" rx="28" ry="10" fill="#2a5f2a" transform="rotate(10,55,55)"/>
+        <ellipse cx="25" cy="45" rx="24" ry="9" fill="#338a33" transform="rotate(-35,25,45)"/>
+        <ellipse cx="60" cy="40" rx="24" ry="9" fill="#2d6a2d" transform="rotate(25,60,40)"/>
+        <ellipse cx="45" cy="30" rx="22" ry="8" fill="#3a9a3a" transform="rotate(-5,45,30)"/>
+      </svg>
+    </div>
+    <div class="island-content">
+      <div class="s1-eyebrow">WELCOME TO</div>
+      <div class="s1-title">Total Drama<span>Island</span></div>
+      <div class="s1-prompt">You have <em>30 seconds</em>.<br>What do you pack for a deserted island?</div>
+      <div class="live-board">
+        <div class="live-board-header">📋 Class answers</div>
+        <div class="live-board-input">
+          <input type="text" id="boardInput" placeholder="Type an item and press Enter…" onkeydown="addItem(event)">
+          <button onclick="addItemBtn()">+ ADD</button>
+        </div>
+        <div class="live-board-items" id="boardItems"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ STAGE 2 — CONFESSIONALS ══════════ -->
+<div class="stage" id="s2">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="tdi-logo">TOTAL DRAMA</div>
+      <div class="stage-label">Stage 2 — <span>The Confessionals</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="timer-wrap" id="timer2" onclick="toggleTimer(2,8)">
+        <span class="timer-icon">⏱</span>
+        <span class="timer-display" id="td2">8:00</span>
+      </div>
+      <div class="nav-dots" id="dots2"></div>
+      <div class="nav-arrows">
+        <button class="nav-btn prev" onclick="go(-1)" id="prevBtn2">◀ BACK</button>
+        <button class="nav-btn next" onclick="go(1)" id="nextBtn2">NEXT ▶</button>
+      </div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="confessional-area">
+      <div class="char-tabs">
+        <div class="char-tab active" onclick="showConf(0)"><span class="tab-emoji">🎤</span> Chris</div>
+        <div class="char-tab" onclick="showConf(1)"><span class="tab-emoji">🎨</span> Gwen</div>
+        <div class="char-tab" onclick="showConf(2)"><span class="tab-emoji">🍗</span> Owen</div>
+        <div class="char-tab" onclick="showConf(3)"><span class="tab-emoji">👑</span> Heather</div>
+        <div class="char-tab" onclick="showConf(4)"><span class="tab-emoji">🐾</span> DJ</div>
+      </div>
+      <div class="confessional-card active" id="conf0">
+        <div class="conf-char-header">
+          <div class="conf-avatar">🎤</div>
+          <div>
+            <div class="conf-name">Chris McLean</div>
+            <div class="conf-archetype">The Host — confident, self-obsessed</div>
+          </div>
+        </div>
+        <div class="conf-text">
+          Okay, so I know I'm technically running this show, but just in case things go sideways — I packed <span class="highlight">some cash</span> and <span class="highlight">a gold coin</span> I've had since season two. I also brought <span class="highlight">some hair product</span>, because there is no universe where I face a camera looking rough. Oh, and <span class="highlight">a mirror</span> — small, fits in my pocket, absolutely essential. Survival is ninety percent confidence, people.
+        </div>
+        <div class="surprise-q">💬 Discussion: <span>Which confessional surprised you the most? Why?</span></div>
+      </div>
+      <div class="confessional-card" id="conf1">
+        <div class="conf-char-header">
+          <div class="conf-avatar">🎨</div>
+          <div>
+            <div class="conf-name">Gwen</div>
+            <div class="conf-archetype">The Goth Artist — dry, independent</div>
+          </div>
+        </div>
+        <div class="conf-text">
+          I brought <span class="highlight">some paper</span> and <span class="highlight">a sketchbook</span>, because if I'm stuck on an island I'm at least going to document how terrible it is. I also packed <span class="highlight">a knife</span> — practical, not dramatic, before anyone says anything. There's <span class="highlight">some music</span> downloaded on my phone too, which, yes, I know the battery will die, but three days of silence would actually break me faster than anything Chris throws at us.
+        </div>
+        <div class="surprise-q">💬 Discussion: <span>Which confessional surprised you the most? Why?</span></div>
+      </div>
+      <div class="confessional-card" id="conf2">
+        <div class="conf-char-header">
+          <div class="conf-avatar">🍗</div>
+          <div>
+            <div class="conf-name">Owen</div>
+            <div class="conf-archetype">The Loveable Optimist — loud, food-obsessed</div>
+          </div>
+        </div>
+        <div class="conf-text">
+          Guys, I thought really hard about this! I packed <span class="highlight">a chicken</span> — a whole one, already cooked, don't judge me — and honestly that alone might win me the game. I also brought <span class="highlight">some meat</span> in a cooler bag, <span class="highlight">some bread</span>, and <span class="highlight">a sandwich</span> I made this morning just in case. People laugh but food is strategy. Happy Owen is fast Owen.
+        </div>
+        <div class="surprise-q">💬 Discussion: <span>Which confessional surprised you the most? Why?</span></div>
+      </div>
+      <div class="confessional-card" id="conf3">
+        <div class="conf-char-header">
+          <div class="conf-avatar">👑</div>
+          <div>
+            <div class="conf-name">Heather</div>
+            <div class="conf-archetype">The Queen Bee — calculating, ruthless</div>
+          </div>
+        </div>
+        <div class="conf-text">
+          I'm not telling you everything, obviously. What I will say is I have <span class="highlight">a book</span> on survival strategy — actual strategy, not the kind Owen thinks counts — and <span class="highlight">some information</span> about two other contestants that I intend to use at exactly the right moment. I also packed <span class="highlight">some rope</span> and <span class="highlight">a lighter</span>. Whether that's for shelter or other purposes is on a need-to-know basis.
+        </div>
+        <div class="surprise-q">💬 Discussion: <span>Which confessional surprised you the most? Why?</span></div>
+      </div>
+      <div class="confessional-card" id="conf4">
+        <div class="conf-char-header">
+          <div class="conf-avatar">🐾</div>
+          <div>
+            <div class="conf-name">DJ</div>
+            <div class="conf-archetype">The Gentle Giant — kind, anxious, animal lover</div>
+          </div>
+        </div>
+        <div class="conf-text">
+          Okay so mama said pack light but I also couldn't leave without <span class="highlight">some chicken</span> in case I find an animal that needs feeding out there. I also brought <span class="highlight">a blanket</span> — not for me, for the animal — and <span class="highlight">some medicine</span> in a little first aid kit. Oh, and <span class="highlight">a book</span> of animal facts because honestly that's just fun. I know people are out here playing mind games but I just want everyone to be okay, including the wildlife.
+        </div>
+        <div class="surprise-q">💬 Discussion: <span>Which confessional surprised you the most? Why?</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ STAGE 3 — LANGUAGE DETECTIVE ══════════ -->
+<div class="stage" id="s3">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="tdi-logo">TOTAL DRAMA</div>
+      <div class="stage-label">Stage 3 — <span>Language Detective</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="timer-wrap" id="timer3" onclick="toggleTimer(3,7)">
+        <span class="timer-icon">⏱</span>
+        <span class="timer-display" id="td3">7:00</span>
+      </div>
+      <div class="nav-dots" id="dots3"></div>
+      <div class="nav-arrows">
+        <button class="nav-btn prev" onclick="go(-1)" id="prevBtn3">◀ BACK</button>
+        <button class="nav-btn next" onclick="go(1)" id="nextBtn3">NEXT ▶</button>
+      </div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="s3-instruction" style="padding:14px 32px 0; flex-shrink:0;">
+      <strong>Pairs:</strong> Click a word from the bank below, then choose which column it belongs in. Watch out — some words might fit in more than one column!
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; padding:12px 32px 14px; gap:12px; min-height:0;">
+      <div class="sort-grid">
+        <div class="sort-col count">
+          <div class="sort-col-header">✓ Can count <span class="sort-col-sub">a / an · -s ending</span></div>
+          <div class="sort-col-body" id="col-count">
+            <div class="sort-item prefilled">mirror <span></span></div>
+            <div class="sort-item prefilled">knife <span></span></div>
+          </div>
+        </div>
+        <div class="sort-col nocount">
+          <div class="sort-col-header">✗ Can't count <span class="sort-col-sub">some · no plural</span></div>
+          <div class="sort-col-body" id="col-nocount">
+            <div class="sort-item prefilled">music <span></span></div>
+            <div class="sort-item prefilled">information <span></span></div>
+          </div>
+        </div>
+        <div class="sort-col depends">
+          <div class="sort-col-header">? Depends <span class="sort-col-sub">context changes the form</span></div>
+          <div class="sort-col-body" id="col-depends">
+            <div class="sort-item prefilled">chicken (?) <span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="word-bank-s3">
+        <div class="wb-title">Word bank — from the confessionals</div>
+        <div class="wb-chips" id="wbChips"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- placement modal -->
+<div class="place-modal" id="placeModal">
+  <div class="place-modal-box">
+    <div class="place-modal-word" id="modalWord"></div>
+    <div class="place-modal-title">Where does this word go?</div>
+    <div class="place-modal-btns">
+      <button class="place-btn count"   onclick="placeWord('count')">✓ Can count</button>
+      <button class="place-btn nocount" onclick="placeWord('nocount')">✗ Can't count</button>
+      <button class="place-btn depends" onclick="placeWord('depends')">? Depends</button>
+      <button class="place-btn place-btn-cancel" onclick="closePlaceModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ STAGE 4 — SURVIVAL RULES ══════════ -->
+<div class="stage" id="s4">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="tdi-logo">TOTAL DRAMA</div>
+      <div class="stage-label">Stage 4 — <span>The Survival Rules</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="timer-wrap" id="timer4" onclick="toggleTimer(4,10)">
+        <span class="timer-icon">⏱</span>
+        <span class="timer-display" id="td4">10:00</span>
+      </div>
+      <div class="nav-dots" id="dots4"></div>
+      <div class="nav-arrows">
+        <button class="nav-btn prev" onclick="go(-1)" id="prevBtn4">◀ BACK</button>
+        <button class="nav-btn next" onclick="go(1)" id="nextBtn4">NEXT ▶</button>
+      </div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="s4-concept">
+      <div class="s4-concept-title">🔍 CONCEPT QUESTIONS — click to reveal answers</div>
+      <div class="concept-qs">
+        <div class="concept-q" onclick="this.classList.toggle('revealed')">
+          Owen says "I packed <em>a chicken</em>." Can he have one chicken? <span class="ans">Yes — it's a whole bird. Countable.</span>
+        </div>
+        <div class="concept-q" onclick="this.classList.toggle('revealed')">
+          DJ says "I brought <em>some chicken</em>." Can he have one chicken here? <span class="ans">No — it's loose meat for an animal. Uncountable.</span>
+        </div>
+        <div class="concept-q" onclick="this.classList.toggle('revealed')">
+          Gwen has "a sketchbook" AND "some paper." What changes between the two? <span class="ans">One is a countable object, the other is an uncountable material.</span>
+        </div>
+      </div>
+    </div>
+    <div class="rule-trio">
+      <div class="rule-card a-an">
+        <div class="rule-card-head">We use A / AN when…</div>
+        <div class="rule-card-body">
+          <textarea class="rule-textarea" placeholder="Write the rule in your own words…"></textarea>
+        </div>
+      </div>
+      <div class="rule-card some">
+        <div class="rule-card-head">We use SOME when…</div>
+        <div class="rule-card-body">
+          <textarea class="rule-textarea" placeholder="Write the rule in your own words…"></textarea>
+        </div>
+      </div>
+      <div class="rule-card dep">
+        <div class="rule-card-head">It DEPENDS when…</div>
+        <div class="rule-card-body">
+          <textarea class="rule-textarea" placeholder="Write the rule in your own words…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ STAGE 5 — 6TH CONTESTANT ══════════ -->
+<div class="stage" id="s5">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="tdi-logo">TOTAL DRAMA</div>
+      <div class="stage-label">Stage 5 — <span>The 6th Contestant</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="timer-wrap" id="timer5" onclick="toggleTimer(5,10)">
+        <span class="timer-icon">⏱</span>
+        <span class="timer-display" id="td5">10:00</span>
+      </div>
+      <div class="nav-dots" id="dots5"></div>
+      <div class="nav-arrows">
+        <button class="nav-btn prev" onclick="go(-1)" id="prevBtn5">◀ BACK</button>
+        <button class="nav-btn next" onclick="go(1)" disabled id="nextBtn5">NEXT ▶</button>
+      </div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="s5-left">
+      <div class="superfan-card">
+        <div class="sf-avatar">📺</div>
+        <div class="sf-name">Contestant #6</div>
+        <div class="sf-archetype">The Superfan</div>
+        <div class="sf-desc">Has watched every TDI episode — twice. Knows every elimination order, every challenge, every meltdown. The problem? Has never actually been outdoors. Their entire idea of survival comes from a screen, not experience. They pack like someone who studied the show, not the island.</div>
+      </div>
+      <div class="task-box">
+        <strong>Your task (pairs)</strong>
+        Decide what the Superfan would pack. Choose 5 items that fit their personality. At least one item must be from your "Depends?" column — agree on the correct form and explain why.
+      </div>
+    </div>
+    <div class="s5-right">
+      <div class="packing-title">🎒 The Superfan's Survival Kit</div>
+      <div class="packing-rows" id="packRows"></div>
+      <div class="present-note">
+        <strong>When you present:</strong> Say each item using the correct form — <em>a/an</em>, <em>some</em>, or plural <em>-s</em>. For your "Depends?" item, explain your context decision. The class votes on the most convincing survival kit. 🏆
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fs-hint" onclick="toggleFS()" title="Toggle fullscreen">⛶ fullscreen</div>
+
+<script>
+// ── STATE ──
+let current = 0;
+const totalStages = 5;
+const stageIds = ['s1','s2','s3','s4','s5'];
+const stageTimers = [5,8,7,10,10];
+const timers = {};
+
+// ── NAVIGATION ──
+function go(dir) {
+  const el = document.getElementById(stageIds[current]);
+  el.classList.remove('active');
+  el.classList.add('exit');
+  setTimeout(()=> el.classList.remove('exit'), 350);
+  current = Math.max(0, Math.min(totalStages-1, current+dir));
+  const next = document.getElementById(stageIds[current]);
+  next.classList.add('active');
+  updateNav();
+}
+
+function updateNav() {
+  for (let i=1; i<=5; i++) {
+    const p = document.getElementById('prevBtn'+( i>1?i:''));
+    const n = document.getElementById('nextBtn'+( i>1?i:''));
+    if(p) p.disabled = (current===0);
+    if(n) n.disabled = (current===totalStages-1);
+  }
+  document.querySelectorAll('.nav-dot').forEach((d,i)=>{
+    d.classList.toggle('active', i===current);
+    d.classList.toggle('done', i<current);
+  });
+}
+
+// build dots in each topbar
+function buildDots() {
+  const containers = document.querySelectorAll('[id^="dots"]');
+  containers.forEach(c => {
+    for(let i=0;i<totalStages;i++){
+      const d = document.createElement('div');
+      d.className = 'nav-dot' + (i===0?' active':'');
+      d.onclick = ()=>{ if(i!==current){ const diff=i-current; go(diff); }};
+      c.appendChild(d);
+    }
+  });
+}
+buildDots();
+
+// ── TIMERS ──
+function toggleTimer(stage, mins) {
+  const key = 'timer'+stage;
+  const wrap = document.getElementById(key);
+  const display = document.getElementById('td'+stage);
+  if(timers[key] && timers[key].running) {
+    clearInterval(timers[key].interval);
+    timers[key].running = false;
+    wrap.classList.remove('running');
+    return;
+  }
+  if(!timers[key] || timers[key].done) {
+    timers[key] = { secs: mins*60, running: false, done: false };
+    display.textContent = fmt(mins*60);
+    wrap.classList.remove('done');
+  }
+  timers[key].running = true;
+  wrap.classList.add('running');
+  timers[key].interval = setInterval(()=>{
+    timers[key].secs--;
+    display.textContent = fmt(timers[key].secs);
+    if(timers[key].secs<=0){
+      clearInterval(timers[key].interval);
+      timers[key].running = false;
+      timers[key].done = true;
+      wrap.classList.remove('running');
+      wrap.classList.add('done');
+      display.textContent = "DONE!";
+    }
+  },1000);
+}
+function fmt(s){ return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
+
+// ── STAGE 1: LIVE BOARD ──
+function addItem(e){ if(e.key==='Enter') addItemBtn(); }
+function addItemBtn(){
+  const input = document.getElementById('boardInput');
+  const val = input.value.trim();
+  if(!val) return;
+  const chip = document.createElement('div');
+  chip.className = 'board-chip';
+  chip.textContent = val;
+  chip.title = 'Click to remove';
+  chip.onclick = ()=> chip.remove();
+  document.getElementById('boardItems').appendChild(chip);
+  input.value = '';
+  input.focus();
+}
+
+// ── STAGE 2: CONFESSIONALS ──
+function showConf(i){
+  document.querySelectorAll('.confessional-card').forEach((c,j)=>{
+    c.classList.toggle('active', j===i);
+  });
+  document.querySelectorAll('.char-tab').forEach((t,j)=>{
+    t.classList.toggle('active', j===i);
+  });
+}
+
+// ── STAGE 3: WORD BANK & SORT ──
+const words = ['meat','book','paper','cash','sandwich','rope','blanket','medicine','hair product','gold coin','lighter','sketchbook'];
+let pendingWord = null;
+
+function buildWordBank(){
+  const c = document.getElementById('wbChips');
+  words.forEach(w=>{
+    const chip = document.createElement('div');
+    chip.className = 'wb-chip';
+    chip.textContent = w;
+    chip.id = 'wb-'+w.replace(/ /g,'_');
+    chip.onclick = ()=> openPlaceModal(w, chip);
+    c.appendChild(chip);
+  });
+}
+buildWordBank();
+
+function openPlaceModal(word, chip){
+  if(chip.classList.contains('placed')) return;
+  pendingWord = { word, chip };
+  document.getElementById('modalWord').textContent = word;
+  document.getElementById('placeModal').classList.add('show');
+}
+function closePlaceModal(){
+  document.getElementById('placeModal').classList.remove('show');
+  pendingWord = null;
+}
+function placeWord(col){
+  if(!pendingWord) return;
+  const {word, chip} = pendingWord;
+  chip.classList.add('placed');
+  const colEl = document.getElementById('col-'+col);
+  const item = document.createElement('div');
+  item.className = 'sort-item';
+  const removeId = 'si-'+Date.now();
+  item.innerHTML = `${word} <span class="remove-btn" onclick="removeItem(this,'${word}','${removeId}')">✕</span>`;
+  item.id = removeId;
+  colEl.appendChild(item);
+  closePlaceModal();
+}
+function removeItem(btn, word, id){
+  document.getElementById(id).remove();
+  const chip = document.getElementById('wb-'+word.replace(/ /g,'_'));
+  if(chip) chip.classList.remove('placed');
+}
+
+// ── STAGE 5: PACKING ROWS ──
+function buildPackRows(){
+  const container = document.getElementById('packRows');
+  for(let i=1;i<=5;i++){
+    const row = document.createElement('div');
+    row.className = 'pack-row';
+    row.innerHTML = `
+      <div class="pack-num">${i}</div>
+      <input class="pack-input" type="text" placeholder="Item #${i}…">
+      <div class="pack-type">
+        <label class="pack-type-opt"><input type="radio" name="pt${i}" value="count"><span class="pack-type-radio"></span>Can count</label>
+        <label class="pack-type-opt"><input type="radio" name="pt${i}" value="nocount"><span class="pack-type-radio"></span>Can't count</label>
+        <label class="pack-type-opt"><input type="radio" name="pt${i}" value="depends"><span class="pack-type-radio"></span>Depends</label>
+      </div>
+      <div class="pack-why"><input type="text" placeholder="why?"></div>`;
+    container.appendChild(row);
+  }
+}
+buildPackRows();
+
+// ── FULLSCREEN ──
+function toggleFS(){
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen();
+}
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') { if(current<totalStages-1) go(1); }
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')  { if(current>0) go(-1); }
+  if(e.key==='f'||e.key==='F') toggleFS();
+});
+</script>
+</body>
+</html>
