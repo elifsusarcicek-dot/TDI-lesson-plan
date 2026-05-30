@@ -293,6 +293,110 @@ html, body {
   to   { transform: scale(1);  opacity: 1; }
 }
 
+/* ── STAGE 1 COUNTDOWN ── */
+.countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+.cd-clock {
+  position: relative;
+  width: 150px; height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cd-ring {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+.cd-ring circle {
+  fill: none;
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+.cd-ring .track { stroke: rgba(255,255,255,.12); }
+.cd-ring .progress {
+  stroke: var(--yellow);
+  stroke-dasharray: 408;   /* 2*π*65 */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke .3s;
+}
+.cd-number {
+  font-family: 'Bangers', cursive;
+  font-size: 62px;
+  letter-spacing: 2px;
+  color: var(--white);
+  line-height: 1;
+  text-shadow: 3px 3px 0 var(--red);
+  z-index: 1;
+}
+.cd-btn {
+  font-family: 'Bangers', cursive;
+  font-size: 22px;
+  letter-spacing: 2px;
+  background: var(--red);
+  color: var(--white);
+  border: 3px solid var(--yellow);
+  border-radius: 8px;
+  padding: 8px 32px;
+  cursor: pointer;
+  transition: transform .12s, background .15s;
+  box-shadow: 0 4px 0 var(--darkred);
+}
+.cd-btn:hover { background: var(--darkred); transform: translateY(-1px); }
+.cd-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--darkred); }
+
+/* warning: last 10s — pulse red */
+.countdown.warning .cd-number { color: var(--yellow); animation: cdPulse .5s ease-in-out infinite; }
+.countdown.warning .cd-ring .progress { stroke: var(--red); }
+@keyframes cdPulse {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.18); }
+}
+
+/* danger: last 5s — faster + red number */
+.countdown.danger .cd-number { color: var(--red); text-shadow: 3px 3px 0 var(--yellow); animation: cdPulse .3s ease-in-out infinite; }
+
+/* TIME'S UP! */
+.countdown.timesup .cd-clock { display: none; }
+.cd-timesup {
+  display: none;
+  font-family: 'Bangers', cursive;
+  font-size: 56px;
+  letter-spacing: 3px;
+  color: var(--yellow);
+  text-shadow: 4px 4px 0 var(--red), 8px 8px 0 rgba(0,0,0,.4);
+}
+.countdown.timesup .cd-timesup { display: block; animation: timesupShake .6s ease; }
+.countdown.timesup .cd-btn { background: var(--gray); border-color: var(--mid); box-shadow: 0 4px 0 #000; }
+@keyframes timesupShake {
+  0% { transform: scale(.4) rotate(0); opacity: 0; }
+  40% { transform: scale(1.25) rotate(-4deg); opacity: 1; }
+  55% { transform: scale(.95) rotate(3deg); }
+  70% { transform: scale(1.1) rotate(-2deg); }
+  85% { transform: scale(.98) rotate(1deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* whole-stage flash when time runs out */
+@keyframes stageFlash {
+  0%   { background: rgba(232,38,58,0); }
+  30%  { background: rgba(232,38,58,.45); }
+  100% { background: rgba(232,38,58,0); }
+}
+.stage-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: rgba(232,38,58,0);
+}
+.stage-flash.go { animation: stageFlash .55s ease 2; }
+
 /* ══════════════════════════════════
    STAGE 2 — CONFESSIONALS
 ══════════════════════════════════ */
@@ -866,6 +970,7 @@ html, body {
   </div>
   <div class="stage-body">
     <div class="island-bg"></div>
+    <div class="stage-flash" id="stageFlash"></div>
     <div class="waves">
       <div class="wave wave1"></div>
       <div class="wave wave2"></div>
@@ -897,6 +1002,17 @@ html, body {
       <div class="s1-eyebrow">WELCOME TO</div>
       <div class="s1-title">Total Drama<span>Island</span></div>
       <div class="s1-prompt">You have <em>30 seconds</em>.<br>What do you pack for a deserted island?</div>
+      <div class="countdown" id="countdown">
+        <div class="cd-clock">
+          <svg class="cd-ring" viewBox="0 0 150 150">
+            <circle class="track" cx="75" cy="75" r="65"></circle>
+            <circle class="progress" id="cdProgress" cx="75" cy="75" r="65"></circle>
+          </svg>
+          <div class="cd-number" id="cdNumber">30</div>
+        </div>
+        <div class="cd-timesup">⏰ TIME'S UP!</div>
+        <button class="cd-btn" id="cdBtn" onclick="startCountdown()">▶ START!</button>
+      </div>
       <div class="live-board">
         <div class="live-board-header">📋 Class answers</div>
         <div class="live-board-input">
@@ -1203,6 +1319,43 @@ function buildDots() {
   });
 }
 buildDots();
+
+// ── STAGE 1: COUNTDOWN ──
+let cdInterval = null;
+const CD_TOTAL = 30;
+const CD_CIRC = 408; // 2*π*65
+function startCountdown(){
+  const cd = document.getElementById('countdown');
+  const numEl = document.getElementById('cdNumber');
+  const prog = document.getElementById('cdProgress');
+  const btn = document.getElementById('cdBtn');
+  // reset (allows restart)
+  if(cdInterval) clearInterval(cdInterval);
+  cd.classList.remove('warning','danger','timesup');
+  let secs = CD_TOTAL;
+  numEl.textContent = secs;
+  prog.style.strokeDashoffset = 0;
+  btn.textContent = '⏸ RESTART';
+  cdInterval = setInterval(()=>{
+    secs--;
+    numEl.textContent = secs;
+    prog.style.strokeDashoffset = CD_CIRC * (1 - secs/CD_TOTAL);
+    cd.classList.toggle('warning', secs<=10 && secs>5);
+    cd.classList.toggle('danger', secs<=5 && secs>0);
+    if(secs<=0){
+      clearInterval(cdInterval);
+      cdInterval = null;
+      cd.classList.remove('warning','danger');
+      cd.classList.add('timesup');
+      btn.textContent = '▶ AGAIN';
+      // whole-stage flash
+      const flash = document.getElementById('stageFlash');
+      flash.classList.remove('go');
+      void flash.offsetWidth; // restart animation
+      flash.classList.add('go');
+    }
+  },1000);
+}
 
 // ── STAGE 1: LIVE BOARD ──
 function addItem(e){ if(e.key==='Enter') addItemBtn(); }
