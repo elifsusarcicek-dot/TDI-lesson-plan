@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Total Drama Island — Teacher's Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #E8263A;
+  --darkred: #9E1425;
+  --yellow: #FFD600;
+  --black: #111;
+  --white: #FFF9F0;
+  --gray: #2a2a2a;
+  --mid: #444;
+  --green: #2A8C4A;
+  --greenlt: #7EE89A;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background:
+    radial-gradient(ellipse 70% 50% at 80% 0%, rgba(232,38,58,.12) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 10% 30%, rgba(255,214,0,.06) 0%, transparent 50%),
+    #0d0d0d;
+  font-family: 'Nunito', sans-serif;
+  color: var(--white);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* ── BACK LINK ── */
+.back-bar {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px 24px 0;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Bangers', cursive;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,.55);
+  text-decoration: none;
+  transition: color .15s;
+}
+.back-link:hover { color: var(--yellow); }
+
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  padding: 36px 0 28px;
+  position: relative;
+}
+.hero-badge {
+  display: inline-block;
+  font-family: 'Bangers', cursive;
+  font-size: 13px;
+  letter-spacing: 3px;
+  background: var(--red);
+  color: var(--yellow);
+  padding: 4px 14px;
+  border-radius: 4px;
+  margin-bottom: 18px;
+}
+.hero-title {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(40px, 7vw, 76px);
+  letter-spacing: 3px;
+  line-height: .95;
+  text-shadow: 4px 4px 0 var(--red), 8px 8px 0 rgba(0,0,0,.4);
+}
+.hero-title span { color: var(--yellow); display:block; }
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 700;
+  color: rgba(255,255,255,.7);
+  margin-top: 16px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── QUICK FACTS STRIP ── */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 34px 0 8px;
+}
+.fact {
+  background: rgba(255,255,255,.04);
+  border: 2px solid var(--mid);
+  border-radius: 12px;
+  padding: 16px 14px;
+  text-align: center;
+  transition: border-color .2s, transform .2s;
+}
+.fact:hover { border-color: var(--yellow); transform: translateY(-3px); }
+.fact-icon { font-size: 28px; display: block; margin-bottom: 6px; }
+.fact-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.45);
+  font-weight: 700;
+}
+.fact-value {
+  font-family: 'Bangers', cursive;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--yellow);
+  margin-top: 4px;
+  line-height: 1.1;
+}
+.fact-value.sm { font-size: 17px; }
+
+/* ── SECTION ── */
+.section { margin-top: 44px; }
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.section-num {
+  font-family: 'Bangers', cursive;
+  font-size: 18px;
+  background: var(--red);
+  color: var(--white);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.section-title {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(24px, 3.4vw, 34px);
+  letter-spacing: 2px;
+}
+.section-title span { color: var(--yellow); }
+
+.card {
+  background: rgba(255,255,255,.04);
+  border: 2px solid var(--mid);
+  border-radius: 14px;
+  padding: 24px 28px;
+}
+.card p { color: rgba(255,255,255,.85); }
+.card p + p { margin-top: 12px; }
+.card strong { color: var(--white); }
+.lead { font-size: 17px; }
+
+/* target audience grid */
+.aud-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.aud-item {
+  display: flex;
+  gap: 12px;
+  background: rgba(255,255,255,.04);
+  border: 1.5px solid var(--mid);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.aud-item .ico { font-size: 22px; flex-shrink: 0; }
+.aud-item h4 {
+  font-family: 'Bangers', cursive;
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: var(--yellow);
+  margin-bottom: 3px;
+}
+.aud-item p { font-size: 13.5px; color: rgba(255,255,255,.7); }
+
+/* good-fit / not-fit columns */
+.fit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.fit-col {
+  border-radius: 14px;
+  border: 2px solid;
+  overflow: hidden;
+}
+.fit-col.yes { border-color: var(--green); }
+.fit-col.no  { border-color: var(--red); }
+.fit-head {
+  font-family: 'Bangers', cursive;
+  font-size: 18px;
+  letter-spacing: 1px;
+  padding: 12px 18px;
+  display: flex; align-items: center; gap: 8px;
+}
+.fit-col.yes .fit-head { background: rgba(42,140,74,.22); color: var(--greenlt); }
+.fit-col.no  .fit-head { background: rgba(232,38,58,.22); color: #FF8A95; }
+.fit-body { padding: 14px 18px; }
+.fit-body li {
+  list-style: none;
+  font-size: 14px;
+  color: rgba(255,255,255,.8);
+  padding: 6px 0 6px 24px;
+  position: relative;
+}
+.fit-col.yes .fit-body li::before { content: '✓'; position: absolute; left: 0; color: var(--greenlt); font-weight: 900; }
+.fit-col.no  .fit-body li::before { content: '✕'; position: absolute; left: 0; color: #FF8A95; font-weight: 900; }
+
+/* stage flow */
+.flow { display: flex; flex-direction: column; gap: 12px; }
+.flow-row {
+  display: grid;
+  grid-template-columns: 54px 1fr 76px;
+  gap: 0;
+  align-items: stretch;
+  background: rgba(255,255,255,.04);
+  border: 2px solid var(--mid);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.flow-row:hover { border-color: var(--yellow); }
+.flow-stage {
+  background: var(--red);
+  font-family: 'Bangers', cursive;
+  font-size: 24px;
+  color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+}
+.flow-mid { padding: 12px 16px; }
+.flow-name {
+  font-family: 'Bangers', cursive;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: var(--yellow);
+  margin-bottom: 2px;
+}
+.flow-desc { font-size: 13.5px; color: rgba(255,255,255,.72); }
+.flow-time {
+  border-left: 1px solid var(--mid);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: rgba(255,214,0,.05);
+}
+.flow-time .t {
+  font-family: 'Bangers', cursive;
+  font-size: 22px;
+  color: var(--white);
+  line-height: 1;
+}
+.flow-time .u { font-size: 9px; letter-spacing: 1px; color: rgba(255,255,255,.45); text-transform: uppercase; }
+
+/* objectives / pills */
+.pills { display: flex; flex-wrap: wrap; gap: 10px; }
+.pill {
+  background: rgba(255,214,0,.1);
+  border: 1.5px solid rgba(255,214,0,.35);
+  border-radius: 22px;
+  padding: 7px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--yellow);
+}
+
+/* tips list */
+.tips { display: flex; flex-direction: column; gap: 12px; }
+.tip {
+  display: flex;
+  gap: 14px;
+  background: rgba(255,255,255,.04);
+  border-left: 4px solid var(--yellow);
+  border-radius: 0 10px 10px 0;
+  padding: 13px 18px;
+}
+.tip .ti-num {
+  font-family: 'Bangers', cursive;
+  font-size: 20px;
+  color: var(--yellow);
+  flex-shrink: 0;
+}
+.tip p { font-size: 14px; color: rgba(255,255,255,.82); }
+.tip strong { color: var(--white); }
+
+/* answer key */
+.key-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.key-col {
+  border-radius: 12px;
+  border: 2px solid;
+  overflow: hidden;
+}
+.key-col.c1 { border-color: var(--green); }
+.key-col.c2 { border-color: var(--red); }
+.key-col.c3 { border-color: var(--yellow); }
+.key-head {
+  font-family: 'Bangers', cursive;
+  font-size: 15px;
+  letter-spacing: 1px;
+  padding: 9px 14px;
+}
+.key-col.c1 .key-head { background: rgba(42,140,74,.22); color: var(--greenlt); }
+.key-col.c2 .key-head { background: rgba(232,38,58,.22); color: #FF8A95; }
+.key-col.c3 .key-head { background: rgba(255,214,0,.12); color: var(--yellow); }
+.key-body { padding: 10px 14px; }
+.key-body span {
+  display: inline-block;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 14px;
+  padding: 3px 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  margin: 3px 3px 0 0;
+}
+.key-note {
+  font-size: 12px;
+  color: rgba(255,255,255,.55);
+  font-style: italic;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* launch button */
+.launch-wrap { text-align: center; margin-top: 50px; }
+.launch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Bangers', cursive;
+  font-size: 26px;
+  letter-spacing: 2px;
+  background: var(--red);
+  color: var(--white);
+  border: 3px solid var(--yellow);
+  border-radius: 12px;
+  padding: 14px 44px;
+  text-decoration: none;
+  box-shadow: 0 5px 0 var(--darkred);
+  transition: transform .12s, background .15s;
+}
+.launch-btn:hover { background: var(--darkred); transform: translateY(-2px); }
+.launch-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--darkred); }
+.launch-hint { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 12px; }
+
+/* footer */
+.foot {
+  text-align: center;
+  margin-top: 50px;
+  padding-top: 24px;
+  border-top: 1px solid var(--mid);
+  font-size: 12px;
+  color: rgba(255,255,255,.35);
+}
+
+@media (max-width: 720px) {
+  .facts { grid-template-columns: 1fr 1fr; }
+  .aud-grid, .fit-grid { grid-template-columns: 1fr; }
+  .key-grid { grid-template-columns: 1fr; }
+  .flow-row { grid-template-columns: 44px 1fr 64px; }
+}
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <a class="back-link" href="index.html">◀ BACK TO ACTIVITIES</a>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">TEACHER'S NOTES</div>
+    <div class="hero-title">Total Drama<span>Island</span></div>
+    <div class="hero-sub">A reality-show themed speaking &amp; grammar challenge that teaches countable vs. uncountable nouns through character confessionals, sorting games, and a survival-kit task.</div>
+  </div>
+
+  <!-- QUICK FACTS -->
+  <div class="facts">
+    <div class="fact">
+      <span class="fact-icon">🎯</span>
+      <div class="fact-label">Level</div>
+      <div class="fact-value">B1</div>
+    </div>
+    <div class="fact">
+      <span class="fact-icon">⏱</span>
+      <div class="fact-label">Duration</div>
+      <div class="fact-value">40 min</div>
+    </div>
+    <div class="fact">
+      <span class="fact-icon">👥</span>
+      <div class="fact-label">Grouping</div>
+      <div class="fact-value sm">Whole class<br>+ pairs</div>
+    </div>
+    <div class="fact">
+      <span class="fact-icon">📝</span>
+      <div class="fact-label">Focus</div>
+      <div class="fact-value sm">Count /<br>Uncount</div>
+    </div>
+  </div>
+
+  <!-- 1. WHAT IS IT -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-num">1</div>
+      <div class="section-title">What is <span>this lesson</span>?</div>
+    </div>
+    <div class="card">
+      <p class="lead"><strong>Total Drama Island</strong> is a fully interactive, projector-ready grammar lesson built around the chaos of a reality-TV survival show. Five contestants each reveal what they packed for a deserted island — and the way they talk about their items teaches students the difference between countable and uncountable nouns.</p>
+      <p>Students move from a fast brainstorm, to reading character "confessionals," to actively sorting nouns, to writing their own grammar rules, and finally to a creative pair task where they pack a survival kit for a sixth contestant. The show theme keeps energy high while the language work stays focused and cumulative — every stage feeds the next.</p>
+    </div>
+  </div>
+
+  <!-- 2. WHO IS IT FOR -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-num">2</div>
+      <div class="section-title">Who is it <span>for</span>?</div>
+    </div>
+    <div class="aud-grid">
+      <div class="aud-item">
+        <span class="ico">🎓</span>
+        <div>
+          <h4>Level B1</h4>
+          <p>High-school learners (roughly ages 14–17) who already know basic articles but mix up <em>a/an</em>, <em>some</em>, and plurals.</p>
+        </div>
+      </div>
+      <div class="aud-item">
+        <span class="ico">🗣️</span>
+        <div>
+          <h4>Speaking-focused classes</h4>
+          <p>Groups that need a reason to talk. Discussion prompts and the final pitch put the grammar into real production.</p>
+        </div>
+      </div>
+      <div class="aud-item">
+        <span class="ico">📺</span>
+        <div>
+          <h4>Teens who like pop culture</h4>
+          <p>The reality-show framing hooks reluctant speakers. No prior knowledge of the show is required to enjoy it.</p>
+        </div>
+      </div>
+      <div class="aud-item">
+        <span class="ico">🖥️</span>
+        <div>
+          <h4>Projector / smartboard rooms</h4>
+          <p>Designed to be run from the front of the class. One screen, full-screen mode, arrow-key navigation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. GOOD FIT / NOT FIT -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-num">3</div>
+      <div class="section-title">Is it the <span>right fit</span>?</div>
+    </div>
+    <div class="fit-grid">
+      <div class="fit-col yes">
+        <div class="fit-head">✓ Great for</div>
+        <ul class="fit-body">
+          <li>Introducing or revising countable / uncountable nouns</li>
+          <li>Mixed-ability classes (tasks scale up or down)</li>
+          <li>A lively single-lesson change of pace</li>
+          <li>Pair work and short spoken presentations</li>
+          <li>Classes with a projector and internet (for fonts)</li>
+        </ul>
+      </div>
+      <div class="fit-col no">
+        <div class="fit-head">✕ Less suitable for</div>
+        <ul class="fit-body">
+          <li>Absolute beginners (A1) with no article knowledge</li>
+          <li>Exam-only, drill-heavy sessions</li>
+          <li>Fully self-study / homework with no teacher present</li>
+          <li>Very large classes where pairs can't present</li>
+          <li>Lessons needing printable worksheets (this is on-screen)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LEARNING OBJECTIVES -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-num">4</div>
+      <div class="section-title">Learning <span>objectives</span></div>
+    </div>
+    <div class="card">
+      <p style="margin-bottom:14px;">By the end of the lesson, students will be able to:</p>
+      <div class="pills">
+        <span class="pill">Identify countable &amp; uncountable nouns</span>
+        <span class="pill">Use <em>a / an</em> with singular countables</span>
+        <span class="pill">Use <em>some</em> with uncountables &amp; plurals</span>
+        <span class="pill">Recognise nouns that change with context</span>
+        <span class="pill">Explain a grammar rule in their own words</span>
+        <span class="pill">Present choices using the correct form</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. LESSON FLOW -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-num">5</div>
+      <div class="section-title">Lesson <span>flow</span> (5 stages)</div>
+    </div>
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-stage">1</div>
+        <div class="flow-mid">
+          <div class="flow-name">The Island Challenge</div>
+          <div class="flow-desc">Lead-in. A 30-second on-screen countdown drives a whole-class brainstorm: "What do you pack for a deserted island?" Answers go on the live board.</div>
+        </div>
+        <div class="flow-time"><span class="t">5</span><span class="u">min</span></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-stage">2</div>
+        <div class="flow-mid">
+          <div class="flow-name">The Confessionals</div>
+          <div class="flow-desc">Five contestants (Chris, Gwen, Owen, Heather, DJ) explain what they packed. Target language is highlighted in each text. Students read and react.</div>
+        </div>
+        <div class="flow-time"><span class="t">8</span><span class="u">min</span></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-stage">3</div>
+        <div class="flow-mid">
+          <div class="flow-name">Language Detective</div>
+          <div class="flow-desc">In pairs, students sort the packed items into <em>Can count</em>, <em>Can't count</em>, and <em>Depends</em> columns. Some words deliberately fit more than one.</div>
+        </div>
+        <div class="flow-time"><span class="t">7</span><span class="u">min</span></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-stage">4</div>
+        <div class="flow-mid">
+          <div class="flow-name">The Survival Rules</div>
+          <div class="flow-desc">Concept-check questions reveal answers on click. Students then write the rules for <em>a/an</em>, <em>some</em>, and "it depends" in their own words.</div>
+        </div>
+        <div class="flow-time"><span class="t">10</span><span class="u">min</span></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-stage">5</div>
+        <div class="flow-mid">
+          <div class="flow-name">The 6th Contestant</div>
+          <div class="flow-desc">Pairs pack a survival kit for "The Superfan," using correct forms. At least one item must come from the <em>Depends</em> column. The class votes on the best kit.</div>
+        </div>
+        <div class="flow-time"><span class="t">10</span><span class="u">min</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. TEACHING TIPS -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-num">6</div>
+      <div class="section-title">Teaching <span>tips</span></div>
+    </div>
+    <div class="tips">
+      <div class="tip">
+        <span class="ti-num">①</span>
+        <p><strong>Run it full-screen.</strong> Press <strong>F</strong> for full-screen and use the <strong>arrow keys</strong> (or the on-screen dots) to move between stages — no scrolling, no distractions.</p>
+      </div>
+      <div class="tip">
+        <span class="ti-num">②</span>
+        <p><strong>Let the countdown create energy.</strong> In Stage 1, hit START and let the timer pressure students into shouting out items. Don't pre-teach — collect wrong forms too; you'll fix them in Stage 4.</p>
+      </div>
+      <div class="tip">
+        <span class="ti-num">③</span>
+        <p><strong>"Chicken" is the key word.</strong> Owen packs <em>a chicken</em> (whole bird, countable); DJ brings <em>some chicken</em> (meat, uncountable). Use this contrast to unlock the whole "Depends" idea.</p>
+      </div>
+      <div class="tip">
+        <span class="ti-num">④</span>
+        <p><strong>Make Stage 4 student-led.</strong> Reveal the concept questions one at a time and elicit the rule before students write. Their wording matters more than perfect terminology.</p>
+      </div>
+      <div class="tip">
+        <span class="ti-num">⑤</span>
+        <p><strong>Insist on spoken forms in Stage 5.</strong> When pairs present, they must say "<em>a</em> map," "<em>some</em> water," "two <em>knives</em>" — and justify their <em>Depends</em> item. That's the productive payoff.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. ANSWER KEY -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-num">7</div>
+      <div class="section-title">Sorting <span>answer key</span></div>
+    </div>
+    <div class="key-grid">
+      <div class="key-col c1">
+        <div class="key-head">✓ Can count</div>
+        <div class="key-body">
+          <span>mirror</span><span>knife</span><span>book</span><span>sandwich</span><span>gold coin</span><span>sketchbook</span><span>lighter</span><span>blanket</span>
+          <div class="key-note">Take <em>a/an</em>, can be plural (knives, books).</div>
+        </div>
+      </div>
+      <div class="key-col c2">
+        <div class="key-head">✗ Can't count</div>
+        <div class="key-body">
+          <span>music</span><span>information</span><span>cash</span><span>bread</span><span>rope</span><span>medicine</span><span>hair product</span>
+          <div class="key-note">Take <em>some</em>, no plural <em>-s</em> in this sense.</div>
+        </div>
+      </div>
+      <div class="key-col c3">
+        <div class="key-head">? Depends</div>
+        <div class="key-body">
+          <span>chicken</span><span>paper</span><span>meat*</span>
+          <div class="key-note">"a chicken" (animal) vs "some chicken" (food); "a paper" (newspaper) vs "some paper" (material). *Accept reasoning that fits.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAUNCH -->
+  <div class="launch-wrap">
+    <a class="launch-btn" href="index.html">▶ LAUNCH THE LESSON</a>
+    <div class="launch-hint">Opens the interactive activity · best viewed full-screen</div>
+  </div>
+
+  <div class="foot">Total Drama Island — ELT activity · Countable &amp; Uncountable Nouns · B1</div>
+
+</div>
+</body>
+</html>
