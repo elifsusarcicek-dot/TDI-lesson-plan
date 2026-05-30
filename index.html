@@ -80,29 +80,6 @@ html, body {
 .stage-label span { color: var(--yellow); }
 .topbar-right { display: flex; align-items: center; gap: 16px; }
 
-/* Timer */
-.timer-wrap {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--gray);
-  border: 2px solid var(--mid);
-  border-radius: 6px; 
-  padding: 4px 12px;
-  cursor: pointer;
-  user-select: none;
-  transition: border-color .2s;
-}
-.timer-wrap:hover { border-color: var(--yellow); }
-.timer-wrap.running { border-color: var(--red); }
-.timer-wrap.done { border-color: var(--yellow); background: #2a1f00; }
-.timer-icon { font-size: 14px; }
-.timer-display {
-  font-family: 'Bangers', cursive;
-  font-size: 20px;
-  letter-spacing: 2px;
-  color: var(--yellow);
-  min-width: 52px;
-}
-
 /* Nav dots */
 .nav-dots { display: flex; gap: 6px; align-items: center; }
 .nav-dot {
@@ -880,10 +857,6 @@ html, body {
       <div class="stage-label">Lead-in — <span>The Island Challenge</span></div>
     </div>
     <div class="topbar-right">
-      <div class="timer-wrap" id="timer1" onclick="toggleTimer(1,5)">
-        <span class="timer-icon">⏱</span>
-        <span class="timer-display" id="td1">5:00</span>
-      </div>
       <div class="nav-dots" id="dots"></div>
       <div class="nav-arrows">
         <button class="nav-btn prev" onclick="go(-1)" disabled id="prevBtn">◀ BACK</button>
@@ -944,10 +917,6 @@ html, body {
       <div class="stage-label">Stage 2 — <span>The Confessionals</span></div>
     </div>
     <div class="topbar-right">
-      <div class="timer-wrap" id="timer2" onclick="toggleTimer(2,8)">
-        <span class="timer-icon">⏱</span>
-        <span class="timer-display" id="td2">8:00</span>
-      </div>
       <div class="nav-dots" id="dots2"></div>
       <div class="nav-arrows">
         <button class="nav-btn prev" onclick="go(-1)" id="prevBtn2">◀ BACK</button>
@@ -1041,10 +1010,6 @@ html, body {
       <div class="stage-label">Stage 3 — <span>Language Detective</span></div>
     </div>
     <div class="topbar-right">
-      <div class="timer-wrap" id="timer3" onclick="toggleTimer(3,7)">
-        <span class="timer-icon">⏱</span>
-        <span class="timer-display" id="td3">7:00</span>
-      </div>
       <div class="nav-dots" id="dots3"></div>
       <div class="nav-arrows">
         <button class="nav-btn prev" onclick="go(-1)" id="prevBtn3">◀ BACK</button>
@@ -1109,10 +1074,6 @@ html, body {
       <div class="stage-label">Stage 4 — <span>The Survival Rules</span></div>
     </div>
     <div class="topbar-right">
-      <div class="timer-wrap" id="timer4" onclick="toggleTimer(4,10)">
-        <span class="timer-icon">⏱</span>
-        <span class="timer-display" id="td4">10:00</span>
-      </div>
       <div class="nav-dots" id="dots4"></div>
       <div class="nav-arrows">
         <button class="nav-btn prev" onclick="go(-1)" id="prevBtn4">◀ BACK</button>
@@ -1166,10 +1127,6 @@ html, body {
       <div class="stage-label">Stage 5 — <span>The 6th Contestant</span></div>
     </div>
     <div class="topbar-right">
-      <div class="timer-wrap" id="timer5" onclick="toggleTimer(5,10)">
-        <span class="timer-icon">⏱</span>
-        <span class="timer-display" id="td5">10:00</span>
-      </div>
       <div class="nav-dots" id="dots5"></div>
       <div class="nav-arrows">
         <button class="nav-btn prev" onclick="go(-1)" id="prevBtn5">◀ BACK</button>
@@ -1207,8 +1164,6 @@ html, body {
 let current = 0;
 const totalStages = 5;
 const stageIds = ['s1','s2','s3','s4','s5'];
-const stageTimers = [5,8,7,10,10];
-const timers = {};
 
 // ── NAVIGATION ──
 function go(dir) {
@@ -1248,39 +1203,6 @@ function buildDots() {
   });
 }
 buildDots();
-
-// ── TIMERS ──
-function toggleTimer(stage, mins) {
-  const key = 'timer'+stage;
-  const wrap = document.getElementById(key);
-  const display = document.getElementById('td'+stage);
-  if(timers[key] && timers[key].running) {
-    clearInterval(timers[key].interval);
-    timers[key].running = false;
-    wrap.classList.remove('running');
-    return;
-  }
-  if(!timers[key] || timers[key].done) {
-    timers[key] = { secs: mins*60, running: false, done: false };
-    display.textContent = fmt(mins*60);
-    wrap.classList.remove('done');
-  }
-  timers[key].running = true;
-  wrap.classList.add('running');
-  timers[key].interval = setInterval(()=>{
-    timers[key].secs--;
-    display.textContent = fmt(timers[key].secs);
-    if(timers[key].secs<=0){
-      clearInterval(timers[key].interval);
-      timers[key].running = false;
-      timers[key].done = true;
-      wrap.classList.remove('running');
-      wrap.classList.add('done');
-      display.textContent = "DONE!";
-    }
-  },1000);
-}
-function fmt(s){ return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
 
 // ── STAGE 1: LIVE BOARD ──
 function addItem(e){ if(e.key==='Enter') addItemBtn(); }
